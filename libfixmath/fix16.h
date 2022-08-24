@@ -54,11 +54,16 @@ static const fix16_t fix16_eps = 1;          /*!< fix16_t epsilon */
 /* Conversion functions between fix16_t and float/integer.
  * These are inlined to allow compiler to optimize away constant numbers
  */
-static inline fix16_t fix16_from_int(int a)     { return a * fix16_one; }
-static inline float   fix16_to_float(fix16_t a) { return (float)a / fix16_one; }
-static inline double  fix16_to_dbl(fix16_t a)   { return (double)a / fix16_one; }
+#if __cplusplus >= 201100
+#define STATIC_CONST static inline constexpr
+#else
+#define STATIC_CONST static inline
+#endif
+STATIC_CONST fix16_t fix16_from_int(int a)     { return a * fix16_one; }
+STATIC_CONST float   fix16_to_float(fix16_t a) { return (float)a / fix16_one; }
+STATIC_CONST double  fix16_to_dbl(fix16_t a)   { return (double)a / fix16_one; }
 
-static inline int fix16_to_int(fix16_t a)
+STATIC_CONST int fix16_to_int(fix16_t a)
 {
 #ifdef FIXMATH_NO_ROUNDING
     return (a >> 16);
@@ -69,7 +74,7 @@ static inline int fix16_to_int(fix16_t a)
 #endif
 }
 
-static inline fix16_t fix16_from_float(float a)
+STATIC_CONST fix16_t fix16_from_float(float a)
 {
 	float temp = a * fix16_one;
 #ifndef FIXMATH_NO_ROUNDING
@@ -78,7 +83,7 @@ static inline fix16_t fix16_from_float(float a)
 	return (fix16_t)temp;
 }
 
-static inline fix16_t fix16_from_dbl(double a)
+STATIC_CONST fix16_t fix16_from_dbl(double a)
 {
 	double temp = a * fix16_one;
     /* F16() and F16C() are both rounding allways, so this should as well */
